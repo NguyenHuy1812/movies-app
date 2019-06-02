@@ -1,17 +1,16 @@
-  # CoderSchool FTW - * KHOA - TMDB PROJECT
+  # CoderSchool FTW - * HUY - TMDB MOVIES APP
 
 Created with love by: HUY NGUYEN
 
 
 This is a simple project written with Reactjs from TMDB
 
-![image](/screenshot.gif)
+![image](/movies-app.gif)
 
 View online demo at: 
 
-Netlify - https://wizardly-hypatia-ed3647.netlify.com/
+Netlify - https://ecstatic-saha-f4a2cd.netlify.com/
 
-Github: https://github.com/kyakaze/KHOA-TMDB
   
   
   ## The following features are implemented
