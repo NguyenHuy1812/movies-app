@@ -48,7 +48,6 @@ class App extends React.Component {
     fetch(api)
       .then(response => response.json())
       .then(data => {
-        console.log("'moviessssss'", data)
         this.setState({
           allMovies: this.state.movies.concat(data.results),
           movies: data.results,
@@ -94,11 +93,8 @@ class App extends React.Component {
     })
   }
   yearHandleChange = () => {
-    console.log('handle');
     let minDate = this.state.year.min;
     let maxDate = this.state.year.max;
-    console.log('searching between', minDate, maxDate);
-
     // Now we need to find all movies, where their release date is between minDate and maxDate
     let movies = this.state.allMovies.filter(
       movie => {
@@ -139,8 +135,7 @@ class App extends React.Component {
     return sumTags
   }
   sortByPopularity = () => {
-    console.log('hellothere')
-    const { movies, allMovies } = this.state;
+    const { allMovies } = this.state;
     this.setState({
       movies: allMovies.sort((a, b) => a.popularity - b.popularity)
     })
@@ -226,9 +221,6 @@ class App extends React.Component {
       var renderAllmovies = this.renderAllMovie()
     }
     return (
-
-      
-
       <Container style={{ backgroundColor: '#CCCCCC' }}>
         {/* Navbar */}
         <Modal
