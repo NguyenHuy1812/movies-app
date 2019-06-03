@@ -13,6 +13,10 @@ import {
 import Pagination from 'react-bootstrap/Pagination'
 import './App.css';
 import InputRange from 'react-input-range';
+import Modal from 'react-modal'
+import YouTube from '@u-wave/react-youtube';
+
+const apiKey = "e5a2bd4d03c2edeb1d954228dcf47ffd";
 var moment = require('moment');
 
 class App extends React.Component {
@@ -28,6 +32,8 @@ class App extends React.Component {
       countTags: 0,
       year: { min: '', max: '' },
       value: { min: '', max: '' },
+      isOpen: false,
+      selectedMovieID: null
     }
     this.handleChange = this.handleChange.bind(this)
   }
@@ -38,12 +44,11 @@ class App extends React.Component {
   //fetch data from api
   getMovie = () => {
     const { page, source, genre_ids } = this.state;
-    const apiKey = "e5a2bd4d03c2edeb1d954228dcf47ffd";
     const api = (`https://api.themoviedb.org/3/movie/${source}?api_key=${apiKey}&page=${page}`);
     fetch(api)
       .then(response => response.json())
       .then(data => {
-        console.log("data", data)
+        console.log("'moviessssss'", data)
         this.setState({
           allMovies: this.state.movies.concat(data.results),
           movies: data.results,
@@ -181,22 +186,38 @@ class App extends React.Component {
     })
   }
   renderAllMovie = () => {
-    return this.state.allMovies.map(({ title, release_date, overview, poster_path, vote_average, popularity, genre_ids }) => {
+    return this.state.allMovies.map((movie) => {
       return (
         <Card border="primary" style={{ width: '18rem' }} >
-          <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${poster_path}`} />
+          <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} />
           <Card.Body>
-            <Card.Title>{title}</Card.Title>
-            <Card.Text>  Overview: {overview}</Card.Text>
+            <Card.Title>{movie.title}</Card.Title>
+            <Card.Text>  Overview: {movie.overview}</Card.Text>
           </Card.Body>
-          <Button variant="primary"><b>Go to Homepage</b></Button>
-          <ListGroupItem><b>Release Date:</b> {release_date}</ListGroupItem>
-          <ListGroupItem><b>Vote average:</b> {vote_average}</ListGroupItem>
-          <ListGroupItem> <b>Popularity:</b> {popularity}</ListGroupItem>
+          <Button variant="primary" onClick={() => this.onClickTrailer(movie.id)}><b>Watch Trailer</b></Button>
+          <ListGroupItem><b>Release Date:</b> {movie.release_date}</ListGroupItem>
+          <ListGroupItem><b>Vote average:</b> {movie.vote_average}</ListGroupItem>
+          <ListGroupItem> <b>Popularity:</b> {movie.popularity}</ListGroupItem>
         </Card>
       )
     })
   }
+
+  onClickTrailer = async (movieID) => {
+    const response = await fetch(`https://api.themoviedb.org/3/movie/${movieID}/videos?api_key=${apiKey}&language=en-US`)
+    const { results } = await response.json()
+    if (results.length > 0) {
+      let item = results[Math.floor(Math.random()*results.length)]
+      this.setState({
+        isOpen: true,
+        selectedMovieID: item.key
+      })
+    }
+  }
+
+  // api for movie vids
+  // https://api.themoviedb.org/3/movie/{movie_id}/videos?api_key=<<api_key>>&language=en-US
+
   //render all here
   render() {
     if (this.state.allMovies.length > this.state.movies.length && this.state.movies.length < 20) {
@@ -205,8 +226,21 @@ class App extends React.Component {
       var renderAllmovies = this.renderAllMovie()
     }
     return (
+
+      
+
       <Container style={{ backgroundColor: '#CCCCCC' }}>
         {/* Navbar */}
+        <Modal
+          isOpen={this.state.isOpen}
+          onRequestClose={() => this.setState({ isOpen: false })}
+        >
+          <YouTube
+            video={this.state.selectedMovieID}
+            width="100%"
+            height="100%"
+          />
+        </Modal>
         <Row className="mynav">
           <div className="Navbar">
             <Navbar bg="" variant="" >
